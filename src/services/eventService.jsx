@@ -2,8 +2,8 @@ import axios from "axios";
 
 export const getAllEvents = async () => {
   try {
-    const token = localStorage.getItem("authToken"); // Ensure token is stored here
-    const response = await axios.get("http://localhost:3000/events", {
+    const token = localStorage.getItem("token"); // Ensure token is stored here
+    const response = await axios.get("http://localhost:3000/events/my-events", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -28,7 +28,7 @@ export const updateEvent = async (id, updatedData) => {
 
 
   export const deleteEvent = async (id) => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     console.log("Token for deleting event:", token); // Ensure the token is there
   
     try {
@@ -43,21 +43,42 @@ export const updateEvent = async (id, updatedData) => {
       throw error;
     }
   };
-  
 
-  export const createEvent = async (eventData) => {
-    const token = localStorage.getItem("authToken"); // Ensure token is stored here
-  
+  export const createParticipant = async (participantData) => {
     try {
-      const response = await axios.post("http://localhost:3000/events", eventData, {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        "http://localhost:3000/participants",
+        participantData, // This is the request body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error creating participant:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+
+  export const getAllParticipants = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:3000/participants/AllParticipants", {
         headers: {
-          Authorization: `Bearer ${token}`, // Attach the token for authentication
+          Authorization: `Bearer ${token}`, 
+          "Content-Type": "application/json"
         },
       });
   
-      return response.data; // Return the response data after event is created
+      return res.data;
     } catch (error) {
-      console.error("Error creating event:", error);
-      throw error; // Throw error to be handled by the calling component
+      console.error("Error fetching participants:", error);
+      throw error;
     }
   };
+  
